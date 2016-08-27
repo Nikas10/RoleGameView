@@ -50,7 +50,7 @@ private EntityManager em;
         jLabel9 = new javax.swing.JLabel();
         jTextField1 = new javax.swing.JTextField();
 
-        jLabel1.setText("Greetings!");
+        jLabel1.setText("Logger");
 
         jScrollPane1.setViewportView(jTextPane1);
 
@@ -61,21 +61,21 @@ private EntityManager em;
             }
         });
 
-        jLabel2.setText("jLabel2");
+        jLabel2.setText("Card Name");
 
-        jLabel3.setText("jLabel3");
+        jLabel3.setText("Card short decription");
 
-        jLabel5.setText("jLabel5");
+        jLabel5.setText("Card damage modifier");
 
-        jLabel6.setText("jLabel6");
+        jLabel6.setText("Card check modifier");
 
-        jLabel7.setText("jLabel7");
+        jLabel7.setText("Card Source of damage");
 
-        jLabel8.setText("jLabel8");
+        jLabel8.setText("Card Type of damage");
 
-        jLabel9.setText("jLabel9");
+        jLabel9.setText("Card Duration");
 
-        jTextField1.setText("jTextField1");
+        jTextField1.setText("Card long description");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -86,7 +86,7 @@ private EntityManager em;
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jTextField1)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 301, Short.MAX_VALUE)
+                        .addComponent(jScrollPane1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jButton1))
                     .addGroup(layout.createSequentialGroup()
@@ -99,7 +99,7 @@ private EntityManager em;
                             .addComponent(jLabel8)
                             .addComponent(jLabel9)
                             .addComponent(jLabel1))
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                        .addGap(0, 267, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -135,19 +135,29 @@ private EntityManager em;
         // TODO add your handling code here:
         if (jTextPane1.getText()==""){}else{
         Card getCard = new Card();
+        Source src = new Source();
+        Damtype dmg = new Damtype();
         String selectq = "SELECT c FROM Card c WHERE c.name = :name";
        try
        {
         TypedQuery<Card> Sel = em.createQuery(selectq, Card.class);
         Sel.setParameter("name", jTextPane1.getText());
         getCard=Sel.getSingleResult();
+        String querydamage = "SELECT c FROM Damtype c where c.id = :id";
+        String querysource = "SELECT c FROM Source c where c.id = :id";
+        TypedQuery<Damtype> DSel = em.createQuery(querydamage,Damtype.class);
+        DSel.setParameter("id", getCard.getDtype());
+        TypedQuery<Source> CSel  =em.createQuery(querysource,Source.class);
+        CSel.setParameter("id", getCard.getSource());
+        dmg=DSel.getSingleResult();
+        src=CSel.getSingleResult();
         jLabel2.setText(getCard.getName());
         jLabel3.setText(getCard.getSdesc());
         jTextField1.setText(getCard.getLdesc());
         jLabel5.setText("Damage Modifier: "+getCard.getDammod());
         jLabel6.setText("Check Modifier: "+ getCard.getDicemod());
-        jLabel7.setText("Source: "+getCard.getSource());
-        jLabel8.setText("Damage Type: "+getCard.getDtype());
+        jLabel7.setText("Source: "+src.getName());
+        jLabel8.setText("Damage Type: "+dmg.getName());
         jLabel9.setText("Duration: "+getCard.getDuration());
         jLabel1.setText("Card was successfully found!");
        }
